@@ -4,9 +4,11 @@ import numpy as np
 
 """Function used to compute the loss."""
 
-
 def compute_loss_mse(y, tx, w):
-    return np.sum((y - tx.dot(w.transpose())) ** 2, axis=0) / (y.shape[0])
+        """Calculate the loss using MSE."""
+    e = y - tx.dot(w)
+    lv = 0.5*np.mean(np.square(e))
+    return lv
 
 
 def compute_loss_mae(y, tx, w):
