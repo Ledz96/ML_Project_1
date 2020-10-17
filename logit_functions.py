@@ -29,6 +29,8 @@ def learning_by_gradient_descent(y, tx, w, gamma):
 
     return loss, w
 
+
+
 def logistic_regression(y,tx,initials_w,max_iters,gamma):
     w=initials_w
     losses = []
@@ -36,6 +38,19 @@ def logistic_regression(y,tx,initials_w,max_iters,gamma):
     
     for i in range(max_iters):
         loss, w= learning_by_gradient_descent(y, tx, w, gamma)
+        losses.append(loss)
+        if len(losses) > 1 and np.abs(losses[-1] - losses[-2]) < threshold:
+            break
+    return w, loss
+
+def logistic_regression_Sgd(y,tx,initials_w,max_iters,gamma,batchsize=1):
+    w=initials_w
+    losses = []
+    threshold = 1e-8
+    
+    for i in range(max_iters):
+        loss, w= stochastic_gradient_descent(
+        y, tx, initials_w, max_iters, gamma, batchsize)
         losses.append(loss)
         if len(losses) > 1 and np.abs(losses[-1] - losses[-2]) < threshold:
             break
@@ -50,3 +65,28 @@ def logistic_accuracy(y, tx, w):
     
     return acc
         
+
+
+def stochastic_gradient_descent(
+        y, tx, initials_w, max_iters, gamma,batch_size=1):
+    """Stochastic gradient descent algorithm."""
+    # ***************************************************
+    # INSERT YOUR CODE HERE
+    # TODO: implement stochastic gradient descent.
+    # ***************************************************
+    ws = [initials_w]
+    losses = []
+    w = initials_w
+    n=batch_size
+    for i in range(max_iters):
+        indexn=np.random.choice(y.size, n)
+        yn=y[indexn]
+        txn=tx[indexn]
+        loss=calculate_loss(y, tx, w)
+        grad=calculate_gradient(y, tx, w)
+
+        w=w-grad*gamma
+
+     
+
+    return loss, w
