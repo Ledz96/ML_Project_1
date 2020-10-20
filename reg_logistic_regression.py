@@ -2,6 +2,21 @@
 """reg logit functions"""
 import numpy as np
 
+def sigmoid(t):
+    """apply the sigmoid function on t."""
+    
+    return 1 / (1 + np.exp(-t))
+
+def calculate_loss(y, tx, w):
+    """compute the loss: negative log likelihood."""
+
+    return np.sum(-y*tx.dot(w) + np.log(1 + np.exp(tx.dot(w))))
+
+def calculate_gradient(y, tx, w):
+    """compute the gradient of loss."""
+    
+    return np.transpose(tx).dot(sigmoid(tx.dot(w)) - y)
+
 def penalized_logistic_regression(y, tx, w, lambda_):
     """return the loss, gradient, and Hessian."""
 
@@ -17,7 +32,7 @@ def learning_by_penalized_gradient(y, tx, w, gamma, lambda_):
     """
  
     # return loss, gradient
-    loss, g = penalized_logistic_regression(y, tx, lambda_)
+    loss, g = penalized_logistic_regression(y, tx, w, lambda_)
 
     # update w
     w = w - gamma*g
@@ -38,7 +53,7 @@ def reg_logistic_regression(y, tx, lambda_, initial_w, max_iters, gamma):
         
         # log info
         #if iter % 100 == 0:
-         #   print("Current iteration={i}, loss={l}".format(i=iter, l=loss))
+        print("Current iteration={i}, loss={l}".format(i=iter, l=loss))
         
         # converge criterion
         losses.append(loss)
