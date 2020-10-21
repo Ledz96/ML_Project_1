@@ -2,6 +2,7 @@ import numpy as np
 
 from utils_predictions_manipulation import *
 from utils_function_mapper import*
+from logistic_regression import sigmoid
 
 def build_k_indices(y, k_fold, seed):
     """build k indices for k-fold."""
@@ -65,6 +66,11 @@ def cross_validation(y, x, k_fold, function_name, lambda_=0, max_iters=0, gamma=
         # calculate predictions for train and test data
         y_tr_prb = x_tr.dot(w)
         y_te_prb = x_te.dot(w)
+        
+        if function_name == 'logistic_regression' or function_name == 'reg_logistic_regression':
+            y_tr_prb = sigmoid(y_tr_prb)
+            y_te_prb = sigmoid(y_te_prb)
+            
         
         # calculate accuracy for train and test data
         y_tr_pr = probability_to_prediction(y_tr_prb)
