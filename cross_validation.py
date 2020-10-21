@@ -25,7 +25,7 @@ def cross_validation(y, x, k_fold, function_name, lambda_=0, max_iters=0, gamma=
     
     k_indices = build_k_indices(y, k_fold, seed)
     
-    initial_w = np.zeros(x.shape[1])
+    initial_w = np.ones((x.shape[1]))*(-0.01)
         
     # get k'th subgroup in test, others in train
     for i in range(k_fold):
