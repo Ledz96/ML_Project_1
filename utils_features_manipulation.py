@@ -38,17 +38,20 @@ def build_poly_index(tx, index_list, degree):
     #list of indices for features modified
     #degrees of polynomial to apply to all features irrespectively
     # ***************************************************
-    xmat=np.ones(tx.shape[0]).reshape(-1,1)
+    added_cols = sum([(len(degree[i])-1) for i in index_list])
+    xmat=np.empty(tx.shape[0], tx.shape[1] + sum([(len(degree[i])-1) for i in index_list]))
+    expanded_cols = 0
     for i in range(1,tx.shape[1]):
         if i in index_list:
             #print("BP:", i, degree[i])
             for d in degree[i]:
                 coltmp=tx[:,i]**d
-                xmat = np.append(xmat, coltmp.reshape(-1,1), axis=1)
+                xmat[:,i+expanded_cols] = coltmp
+                expanded_cols+=1
         else:
             coltmp=tx[:,i]
-            xmat = np.append(xmat, coltmp.reshape(-1,1), axis=1)
-    return np.array(xmat)
+            xmat[:,i+expanded_cols] = coltmp
+    return xmat
 
 def min_max_scale(x):
     """Compute min-max scaling on x and return the scaled matrix"""
