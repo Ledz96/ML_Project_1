@@ -26,10 +26,13 @@ def replace_nans_with_median(x, threshold):
     """given a dataset, replaces nans with the median for that column if nans/all_points <= threshold, deletes otherwise"""
     
     ret = np.empty((x.shape[0],0))
+    dropped = []
     for col in range(x.shape[1]):
         if np.isnan(x[:,col]).sum() / x.shape[0] <= threshold:
             m = np.nanmedian(x[:,col])
             nan_to_median = lambda p: p if not np.isnan(p) else m
             vfunc = np.vectorize(nan_to_median)
             ret = np.c_[ret, vfunc(x[:,col])]
-    return ret
+        else:
+            dropped.append(col)
+    return ret, dropped
