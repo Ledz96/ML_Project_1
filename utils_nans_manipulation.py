@@ -33,12 +33,19 @@ def replace_nans_with_median(x, threshold, seed=1):
     dropped = []
     for col in range(x.shape[1]):
         if np.isnan(x[:,col]).sum() / x.shape[0] <= threshold:
-            m = np.nanmedian(x[:,col])
-            noise = m * (np.random.ranf()*2-1)/100
-            m = m + noise
-            nan_to_median = lambda p: p if not np.isnan(p) else m
-            vfunc = np.vectorize(nan_to_median)
-            ret = np.c_[ret, vfunc(x[:,col])]
+                m = np.nanmedian(x[:,col])    
+                nan_to_median = lambda p: p if not np.isnan(p) else m
+                vfunc = np.vectorize(nan_to_median)         
+                ret = np.c_[ret, vfunc(x[:,col])]
+
+                if np.isnan(x[:,col]).any():
+                    for i,point in enumerate(ret[:,col-len(dropped)]):
+                        if point == m:
+                            if m != 0:
+                                noise = m*(np.random.ranf()*2-1)/100
+                            else:
+                                noise = (np.random.ranf()*2-1)/1000
+                            ret[i,col-len(dropped)] = m + noise
         else:
             dropped.append(col)
     return ret, dropped
