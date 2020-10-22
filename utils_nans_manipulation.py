@@ -2,6 +2,8 @@
 """Utils functions for nan handling"""
 
 import numpy as np
+import random as rd
+
 
 def replace_bad_data_with_nans(x, bad_data):
     """given a data matrix and a parameter for bad data, replaces all instances of that value with nan"""
@@ -22,14 +24,18 @@ def store_nan_points(x,y):
     ret_x, ret_y = zip(*[(x_point,y_point) for x_point,y_point in zip(x,y) if np.isnan(x_point).any()])
     return np.array(ret_x), np.array(ret_y)
 
-def replace_nans_with_median(x, threshold):
+def replace_nans_with_median(x, threshold, seed=1):
     """given a dataset, replaces nans with the median for that column if nans/all_points <= threshold, deletes otherwise"""
+    
+    np.random.seed(seed)
     
     ret = np.empty((x.shape[0],0))
     dropped = []
     for col in range(x.shape[1]):
         if np.isnan(x[:,col]).sum() / x.shape[0] <= threshold:
             m = np.nanmedian(x[:,col])
+            noise = m * (np.random.ranf()*2-1)/100
+            m = m + noise
             nan_to_median = lambda p: p if not np.isnan(p) else m
             vfunc = np.vectorize(nan_to_median)
             ret = np.c_[ret, vfunc(x[:,col])]
