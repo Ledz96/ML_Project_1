@@ -9,7 +9,7 @@ def load_data(filepath):
     with open(filepath, 'r') as f:
         reader = csv.reader(f, delimiter=',')
         header = next(reader)
-    return np.genfromtxt('Data/train.csv', delimiter=",",names=True, dtype=dtypes), header
+    return np.genfromtxt(filepath, delimiter=",",names=True, dtype=dtypes), header
 
 def structure_data(data):
     # Building y

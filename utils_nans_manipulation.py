@@ -36,3 +36,18 @@ def replace_nans_with_median(x, threshold):
         else:
             dropped.append(col)
     return ret, dropped
+
+def delete_nans_indexes(x, nans_indexes):
+    """returns a dataset without the columns in nans_indexes"""
+    return np.delete(x, nans_indexes, axis=1)
+
+def replace_test_nans_with_median(xtest, xtrain):
+    """given a cleaned train and dirty test dataset, replace test nans with median for all values in that column"""
+    
+    for col in range(xtest.shape[1]):
+        if np.isnan(xtest[:,col]).any():
+            m = np.nanmedian(np.r_[xtrain[:,col], xtest[:,col]])
+            nan_to_median = lambda p: p if not np.isnan(p) else m
+            vfunc = np.vectorize(nan_to_median)
+            xtest[:,col] = vfunc(xtest[:,col])
+            
