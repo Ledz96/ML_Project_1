@@ -42,7 +42,8 @@ def build_poly_index(tx, index_list, degree):
     xmat=np.ones(tx.shape[0]).reshape(-1,1)
     for i in range(1,tx.shape[1]):
         if i in index_list:
-            for d in degree:
+            print("BP:", i, degree[i])
+            for d in degree[i]:
                 coltmp=tx[:,i]**d
                 xmat = np.append(xmat, coltmp.reshape(-1,1), axis=1)
         if i not in index_list:
@@ -162,8 +163,11 @@ def split_data_set(X_total, Y_total, thresh):
                 Y = in_Ys[i]
                 out_Xs.append(X[X[:,split[0]]>=split[1]])
                 out_Xs.append(X[X[:,split[0]]<split[1]])
+                out_Xs.append(X[np.isnan(X[:,split[0]])])
+                
                 out_Ys.append(Y[X[:,split[0]]>=split[1]])
                 out_Ys.append(Y[X[:,split[0]]<split[1]])
+                out_Ys.append(Y[np.isnan(X[:,split[0]])])
             in_Xs = out_Xs.copy()
             in_Ys = out_Ys.copy()
             out_Xs = []
@@ -171,7 +175,7 @@ def split_data_set(X_total, Y_total, thresh):
 
         #Verifies if points are missing or duplicated 
         if not sum([arr.shape[0] for arr in in_Xs]) == X_total.shape[0]:
-            print("Error in splitting Xs")
+            print("Error in splitting Xs", sum([arr.shape[0] for arr in in_Xs]), [arr.shape[0] for arr in in_Xs])
 
         if not sum([arr.shape[0] for arr in in_Ys]) == Y_total.shape[0]:
             print("Error in splitting Ys")
@@ -190,3 +194,13 @@ def split_data_set(X_total, Y_total, thresh):
         Y_sets_clean.append([split for split in dset if split.shape[0]>0])
     
     return X_sets_clean, Y_sets_clean, flat_list
+
+def all_combinations_list(thresh):
+    '''Generates all combinations for items in list (thresh)'''
+    combinations = []
+    for i in range(len(thresh)):
+        out = list(itertools.combinations(thresh, i+1))
+        combinations.append([i for i in out])
+    flat_list = [item for sublist in combinations for item in sublist]
+    return flat_list
+    
