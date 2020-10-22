@@ -85,7 +85,10 @@ def standardize_by_distribution(data, st_type):
     
     # Skewed standardization
     if st_type==4:
-        data = data - statistics.mode(out)
+        try:
+            data = data - statistics.mode(out)
+        except:
+            data = data - out.mean()
         data = data/out.std()
         return data
     
