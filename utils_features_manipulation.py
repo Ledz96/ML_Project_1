@@ -17,7 +17,7 @@ def standardize(x):
     return xnew, mean_x, substd_x
 
 def build_poly_multi(tx, degree):
-    """polynomial basis functions for input data tx, for all features expanded to degrees in list.Extended matrix is inputed np.array"""
+    """polynomial basis functions for input data tx, for all features expanded to d degree.Extended matrix is inputed np.array"""
     # ***************************************************
     # augmented x matrix with column of 1 input
     #list of indices for features modified
@@ -25,10 +25,9 @@ def build_poly_multi(tx, degree):
     # ***************************************************
     xmat=np.ones(tx.shape[0]).reshape(-1,1)
     for i in range(1,tx.shape[1]):
-        for d in degree:
+        for d in range(1,degree+1):
             coltmp=tx[:,i]**d
             xmat = np.append(xmat, coltmp.reshape(-1,1), axis=1)
-
         
     return np.array(xmat)
 
