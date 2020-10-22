@@ -78,11 +78,11 @@ def cross_validation(y, x, k_fold, function_name, lambda_=0, max_iters=0, gamma=
         # calculate accuracy for train and test data
         y_tr_pr = probability_to_prediction(y_tr_prb)
         y_te_pr = probability_to_prediction(y_te_prb)
-        y_te = probability_to_prediction(y_te)
-        y_tr = probability_to_prediction(y_tr)
+        y_te_real = probability_to_prediction(y_te)
+        y_tr_real = probability_to_prediction(y_tr)
         
         # getting accuracy
-        acc_tr.append(get_prediction_accuracy(y_tr, y_tr_pr))
-        acc_te.append(get_prediction_accuracy(y_te, y_te_pr))
+        acc_tr.append(get_prediction_accuracy(y_tr_real, y_tr_pr))
+        acc_te.append(get_prediction_accuracy(y_te_real, y_te_pr))
         
     return np.mean(acc_tr), np.mean(acc_te)
