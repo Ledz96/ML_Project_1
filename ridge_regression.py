@@ -8,7 +8,7 @@ def ridge_regression(y, tx, lambda_):
     """implement ridge regression."""
     XX = np.dot(tx.transpose(),tx)
     I = np.identity(XX.shape[0])
-    XX = XX + lambda_*I
+    XX = XX + (lambda_/(2*XX.shape[0]))*I
     B = np.dot(tx.transpose(),y)
     if len(XX.shape)==0:
         w_s = B/XX
