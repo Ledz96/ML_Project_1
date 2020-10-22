@@ -42,11 +42,11 @@ def build_poly_index(tx, index_list, degree):
     xmat=np.ones(tx.shape[0]).reshape(-1,1)
     for i in range(1,tx.shape[1]):
         if i in index_list:
-            print("BP:", i, degree[i])
+            #print("BP:", i, degree[i])
             for d in degree[i]:
                 coltmp=tx[:,i]**d
                 xmat = np.append(xmat, coltmp.reshape(-1,1), axis=1)
-        if i not in index_list:
+        else:
             coltmp=tx[:,i]
             xmat = np.append(xmat, coltmp.reshape(-1,1), axis=1)
     return np.array(xmat)
