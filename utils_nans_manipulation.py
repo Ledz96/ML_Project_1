@@ -24,7 +24,7 @@ def store_nan_points(x,y):
     ret_x, ret_y = zip(*[(x_point,y_point) for x_point,y_point in zip(x,y) if np.isnan(x_point).any()])
     return np.array(ret_x), np.array(ret_y)
 
-def replace_nans_with_median_test(x, threshold, seed=1):
+def replace_nans_with_median(x, threshold, seed=1):
     """given a dataset, replaces nans with the median for that column if nans/all_points <= threshold, deletes otherwise"""
     
     np.random.seed(seed)
