@@ -23,13 +23,16 @@ def build_poly_multi(tx, degree):
     #list of indices for features modified
     #degrees of polynomial to apply to all features irrespectively
     # ***************************************************
-    xmat=np.ones(tx.shape[0]).reshape(-1,1)
+    xmat=np.empty((tx.shape[0],degree*(tx.shape[1]-1)+1))
+    xmat[:,0] = np.ones((tx.shape[0]))
+    index = 1
     for i in range(1,tx.shape[1]):
         for d in range(1,degree+1):
             coltmp=tx[:,i]**d
-            xmat = np.append(xmat, coltmp.reshape(-1,1), axis=1)
+            xmat[:,index] = coltmp
+            index += 1
         
-    return np.array(xmat)
+    return xmat
 
 def build_poly_index(tx, index_list, degree):
     """polynomial basis functions for input data tx, for all features expanded to d degree.Extended matrix is inputed np.array. Index list includes all variables that will be expanded, mostly useful to avoid expanding categorical variables"""
@@ -39,18 +42,19 @@ def build_poly_index(tx, index_list, degree):
     #degrees of polynomial to apply to all features irrespectively
     # ***************************************************
     added_cols = sum([(len(degree[i])-1) for i in index_list])
-    xmat=np.empty(tx.shape[0], tx.shape[1] + sum([(len(degree[i])-1) for i in index_list]))
-    expanded_cols = 0
-    for i in range(1,tx.shape[1]):
+    xmat=np.empty((tx.shape[0], tx.shape[1] + sum([(len(degree[i])-1) for i in index_list])))
+    ind = 0
+    for i in range(tx.shape[1]):
         if i in index_list:
             #print("BP:", i, degree[i])
             for d in degree[i]:
                 coltmp=tx[:,i]**d
-                xmat[:,i+expanded_cols] = coltmp
-                expanded_cols+=1
+                xmat[:,ind] = coltmp
+                ind+=1
         else:
             coltmp=tx[:,i]
-            xmat[:,i+expanded_cols] = coltmp
+            xmat[:,ind] = coltmp
+            ind+=1
     return xmat
 
 def min_max_scale(x):
@@ -60,85 +64,6 @@ def min_max_scale(x):
     x_max = (x.max(axis=0))
 
     return (x - x_min) / (x_max - x_min)
-
-def standardize_by_distribution(data, st_type):
-    '''Allows for standardization by different distributions'''
-    
-    out = data[[not np.isnan(i) for i in data]]
-
-    # No standardization
-    if st_type==0:
-        return data
-    
-    # Gaussian standardization
-    if st_type==1:
-        data = data - out.mean()
-        data = data/out.std()
-        return data
-    
-    # Poisson standardization (mean == std)
-    if st_type==2:
-        data = data/out.std()
-        return data
-    
-    # Mean stadardization (mean = 2x std)
-    if st_type==3:
-        data = data/out.mean()
-        return data
-    
-    # Skewed standardization
-    if st_type==4:
-        try:
-            data = data - statistics.mode(out)
-        except:
-            data = data - out.mean()
-        data = data/out.std()
-        return data
-    
-    # Max standardization
-    if st_type==5:
-        data = data/out.max()
-        return data
-
-def select_standardization(data):
-    """Returns the type of standardization to apply to each feature (data)"""
-    
-    out = data[[not np.isnan(i) for i in data]]
-    
-    if len(np.unique(out))<10:          #No standardization if categorical
-        st_type = 0
-        
-    elif ((out.max()-out.min())<2) & (out.max()<10): #No standardization if small span
-        st_type = 0
-        
-    elif out.min()>=0:
-        if out.mean()/out.std()>=2.8:   #Mode standardization for spread out
-            st_type = 4
-        elif out.mean()/out.std()>=1.5: #Mean standardization
-            st_type = 3
-        elif out.mean()/out.std()>=0.5: #Std Standardization
-            st_type = 2
-        else:                           #Max standardixation
-            st_type = 5
-            
-    elif abs(out.min())==out.max():     #Max standardization
-        st_type = 5
-        
-    else:                               #Gaussian standardization
-        st_type = 1
-    
-    return st_type
-
-def standardize_data(X_array):
-    '''Returns the standardized data array as internally defined in st_types'''
-    
-    X_out = X_array.copy()
-    for i in range(X_array.shape[1]):
-        data = X_array[:,i]
-        st_type = select_standardization(data)
-        X_out[:,i] = standardize_by_distribution(data, st_type)
-        
-    return X_out
 
 def split_data_set(X_total, Y_total, thresh):
     '''Splits data into all combinations of thersholds defined in thresh'''
