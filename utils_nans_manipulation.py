@@ -24,7 +24,7 @@ def store_nan_points(x,y):
     ret_x, ret_y = zip(*[(x_point,y_point) for x_point,y_point in zip(x,y) if np.isnan(x_point).any()])
     return np.array(ret_x), np.array(ret_y)
 
-def replace_nans_with_median(x, threshold, seed=1):
+def replace_nans_with_median_test(x, threshold, seed=1):
     """given a dataset, replaces nans with the median for that column if nans/all_points <= threshold, deletes otherwise"""
     
     np.random.seed(seed)
@@ -33,34 +33,33 @@ def replace_nans_with_median(x, threshold, seed=1):
     dropped = []
     for col in range(x.shape[1]):
         if np.isnan(x[:,col]).sum() / x.shape[0] <= threshold:
-                m = np.nanmedian(x[:,col])    
-                nan_to_median = lambda p: p if not np.isnan(p) else m
-                vfunc = np.vectorize(nan_to_median)         
-                ret = np.c_[ret, vfunc(x[:,col])]
-
-                if np.isnan(x[:,col]).any():
-                    for i,point in enumerate(ret[:,col-len(dropped)]):
-                        if point == m:
-                            if m != 0:
-                                noise = m*(np.random.ranf()*2-1)/100
-                            else:
-                                noise = (np.random.ranf()*2-1)/1000
-                            ret[i,col-len(dropped)] = m + noise
+            m = np.nanmedian(x[:,col])
+            if m != 0:
+                nan_to_median = lambda p: p if not np.isnan(p) else m*(np.random.ranf()*2-1)/100
+            else:
+                nan_to_median = lambda p: p if not np.isnan(p) else (np.random.ranf()*2-1)/1000
+            vfunc = np.vectorize(nan_to_median) 
+            ret = np.c_[ret, vfunc(x[:,col])]
         else:
             dropped.append(col)
+            
     return ret, dropped
 
 def delete_nans_indexes(x, nans_indexes):
     """returns a dataset without the columns in nans_indexes"""
     return np.delete(x, nans_indexes, axis=1)
 
-def replace_test_nans_with_median(xtest, xtrain):
+def replace_test_nans_with_median(xtest, xtrain, seed=1):
     """given a cleaned train and dirty test dataset, replace test nans with median for all values in that column"""
+    
+    np.random.seed(seed)
     
     for col in range(xtest.shape[1]):
         if np.isnan(xtest[:,col]).any():
             m = np.nanmedian(np.r_[xtrain[:,col], xtest[:,col]])
-            nan_to_median = lambda p: p if not np.isnan(p) else m
+            if m != 0:
+                nan_to_median = lambda p: p if not np.isnan(p) else m*(np.random.ranf()*2-1)/100
+            else:
+                nan_to_median = lambda p: p if not np.isnan(p) else (np.random.ranf()*2-1)/1000
             vfunc = np.vectorize(nan_to_median)
             xtest[:,col] = vfunc(xtest[:,col])
-            
