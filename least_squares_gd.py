@@ -12,7 +12,8 @@ def compute_gradient(y, tx, w):
 
 def least_squares_GD(y, tx, initial_w, max_iters, gamma):
     """Gradient descent algorithm."""
-
+    threshold = 1e-8
+    
     losses = []
     w = initial_w
     for n_iter in range(max_iters):
@@ -22,9 +23,13 @@ def least_squares_GD(y, tx, initial_w, max_iters, gamma):
 
         # update w by gradient
         w = w - gamma*g
-
+        
         # store w and loss
         print("Gradient Descent({bi}/{ti}): loss={l}".format(
               bi=n_iter, ti=max_iters - 1, l=loss))
+        
+        losses.append(loss)
+        if len(losses) > 1 and np.abs(losses[-1] - losses[-2]) < threshold:
+            break
 
     return w, loss

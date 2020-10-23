@@ -12,6 +12,8 @@ def compute_stoch_gradient(y, tx, w):
 def least_squares_SGD(
         y, tx, initial_w, max_iters, gamma, batch_size=1):
     """Stochastic gradient descent algorithm."""
+    
+    threshold = 1e-8
 
     losses = []
     w = initial_w
@@ -27,6 +29,10 @@ def least_squares_SGD(
 
         print("Stochastic Gradient Descent({bi}/{ti}): loss={l}".format(
                   bi=n_iter, ti=max_iters - 1, l=loss))
+        
+        losses.append(loss)
+        if len(losses) > 1 and np.abs(losses[-1] - losses[-2]) < threshold:
+            break
 
 
     return w, loss

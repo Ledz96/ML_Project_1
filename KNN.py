@@ -2,6 +2,7 @@
 """Utils functions for KNN"""
 
 import numpy as np
+from utils_predictions_manipulation import*
 
 def get_KNN(Xtest,Xtrain,Ytrain,dist_func, k_n):
     """ input are extended X matrices, returns ypredictions array for Xtest using k closest distances
@@ -43,3 +44,10 @@ def dist_manhattan_broadcast(matrix, row):
     
     dist=np.sum(np.abs(matrix-row), axis=1)
     return dist
+
+def get_prediction_from_knn(knn, k, y):
+    """Given a k, y, and a list of nn, returns a prediction"""
+    
+    k_neighbors_vals = y[knn[:,:k].astype(int)]
+    k_neighbors_mean = k_neighbors_vals.mean(axis=1)
+    return probability_to_prediction(k_neighbors_mean)
