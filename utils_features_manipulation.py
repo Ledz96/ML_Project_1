@@ -39,18 +39,19 @@ def build_poly_index(tx, index_list, degree):
     #degrees of polynomial to apply to all features irrespectively
     # ***************************************************
     added_cols = sum([(len(degree[i])-1) for i in index_list])
-    xmat=np.empty(tx.shape[0], tx.shape[1] + sum([(len(degree[i])-1) for i in index_list]))
-    expanded_cols = 0
-    for i in range(1,tx.shape[1]):
+    xmat=np.empty((tx.shape[0], tx.shape[1] + sum([(len(degree[i])-1) for i in index_list])))
+    ind = 0
+    for i in range(tx.shape[1]):
         if i in index_list:
             #print("BP:", i, degree[i])
             for d in degree[i]:
                 coltmp=tx[:,i]**d
-                xmat[:,i+expanded_cols] = coltmp
-                expanded_cols+=1
+                xmat[:,ind] = coltmp
+                ind+=1
         else:
             coltmp=tx[:,i]
-            xmat[:,i+expanded_cols] = coltmp
+            xmat[:,ind] = coltmp
+            ind+=1
     return xmat
 
 def min_max_scale(x):
