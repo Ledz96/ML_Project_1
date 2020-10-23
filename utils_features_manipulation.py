@@ -23,13 +23,16 @@ def build_poly_multi(tx, degree):
     #list of indices for features modified
     #degrees of polynomial to apply to all features irrespectively
     # ***************************************************
-    xmat=np.ones(tx.shape[0]).reshape(-1,1)
+    xmat=np.empty((tx.shape[0],degree*(tx.shape[1]-1)+1))
+    xmat[:,0] = np.ones((tx.shape[0]))
+    index = 1
     for i in range(1,tx.shape[1]):
         for d in range(1,degree+1):
             coltmp=tx[:,i]**d
-            xmat = np.append(xmat, coltmp.reshape(-1,1), axis=1)
+            xmat[:,index] = coltmp
+            index += 1
         
-    return np.array(xmat)
+    return xmat
 
 def build_poly_index(tx, index_list, degree):
     """polynomial basis functions for input data tx, for all features expanded to d degree.Extended matrix is inputed np.array. Index list includes all variables that will be expanded, mostly useful to avoid expanding categorical variables"""
