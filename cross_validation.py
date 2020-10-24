@@ -17,7 +17,7 @@ def build_k_indices(y, k_fold, seed):
                  for k in range(k_fold)]
     return np.array(k_indices)
 
-def cross_validation(y, x, k_fold, function_name, lambda_=0, max_iters=0, gamma=0, seed=1):
+def cross_validation(y, x, k_fold, function_name, lambda_=0, max_iters=0, gamma=0,threshold=0.5, seed=1):
     """return the loss of ridge regression."""
 
     #rmse_tr = []
@@ -76,10 +76,10 @@ def cross_validation(y, x, k_fold, function_name, lambda_=0, max_iters=0, gamma=
             
         
         # calculate accuracy for train and test data
-        y_tr_pr = probability_to_prediction(y_tr_prb)
-        y_te_pr = probability_to_prediction(y_te_prb)
-        y_te_real = probability_to_prediction(y_te)
-        y_tr_real = probability_to_prediction(y_tr)
+        y_tr_pr = probability_to_prediction(y_tr_prb,threshold)
+        y_te_pr = probability_to_prediction(y_te_prb,threshold)
+        y_te_real = probability_to_prediction(y_te,threshold)
+        y_tr_real = probability_to_prediction(y_tr,threshold)
         
         # getting accuracy
         acc_tr.append(get_prediction_accuracy(y_tr_real, y_tr_pr))
