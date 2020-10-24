@@ -53,6 +53,7 @@ def replace_test_nans_with_median(xtest, xtrain, seed=1):
     """given a cleaned train and dirty test dataset, replace test nans with median for all values in that column"""
     
     np.random.seed(seed)
+    ret = xtest.copy()
     
     for col in range(xtest.shape[1]):
         if np.isnan(xtest[:,col]).any():
@@ -62,4 +63,6 @@ def replace_test_nans_with_median(xtest, xtrain, seed=1):
             else:
                 nan_to_median = lambda p: p if not np.isnan(p) else (np.random.ranf()*2-1)/1000
             vfunc = np.vectorize(nan_to_median)
-            xtest[:,col] = vfunc(xtest[:,col])
+            ret[:,col] = vfunc(xtest[:,col])
+            
+    return ret
