@@ -48,9 +48,14 @@ def build_poly_index(tx, index_list, degree):
         if i in index_list:
             #print("BP:", i, degree[i])
             for d in degree[i]:
-                coltmp=tx[:,i]**d
-                xmat[:,ind] = coltmp
-                ind+=1
+                if d<1:
+                    coltmp=(np.abs(tx[:,i])**d)*np.sign(tx[:,i])
+                    xmat[:,ind] = coltmp
+                    ind+=1
+                else:
+                    coltmp=tx[:,i]**d
+                    xmat[:,ind] = coltmp
+                    ind+=1
         else:
             coltmp=tx[:,i]
             xmat[:,ind] = coltmp
