@@ -3,10 +3,10 @@
 
 import numpy as np
 
-def probability_to_prediction(y):
+def probability_to_prediction(y,threshold=0.5):
     """given an array of probabilities y, returns a prediction (1 or -1) for each"""
     
-    replacer = lambda p: 1 if p > 0.5 else -1
+    replacer = lambda p: 1 if p > threshold else -1
     vfunc = np.vectorize(replacer)
     return vfunc(y)
 
