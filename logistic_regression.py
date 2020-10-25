@@ -10,12 +10,12 @@ def sigmoid(t):
 def calculate_loss(y, tx, w):
     """compute the loss: negative log likelihood."""
 
-    return np.sum(-y*tx.dot(w) + np.log(1 + np.exp(tx.dot(w))))
+    return np.sum(-y*tx.dot(w) + np.log(1 + np.exp(tx.dot(w))))/len(y)
 
 def calculate_gradient(y, tx, w):
     """compute the gradient of loss."""
     
-    return np.transpose(tx).dot(sigmoid(tx.dot(w)) - y)
+    return np.transpose(tx).dot(sigmoid(tx.dot(w)) - y)/len(y)
 
 def learning_by_gradient_descent(y, tx, w, gamma):
     """
