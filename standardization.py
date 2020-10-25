@@ -15,7 +15,7 @@ class StdType(Enum):
     SKEWED = 4
     MAX = 5
     
-def standardize(argument):
+def standardize_switch(argument):
     switcher = {
         StdType.GAUSSIAN: standardize_gaussian,
         StdType.POISSON: standardize_poisson,
@@ -82,7 +82,7 @@ def select_standardization(data):
 def standardize_column(data, col, return_dict):
     st_type = select_standardization(data)
     if st_type != StdType.NO_STD:
-        return_dict[col] = standardize(st_type)(data)
+        return_dict[col] = standardize_switch(st_type)(data)
         
 def standardize_data_parallel(x):
     manager = multiprocessing.Manager()
