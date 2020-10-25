@@ -109,6 +109,6 @@ def standardize_data(x):
     for i in range(1, x.shape[1]):
         st_type = select_standardization(x[:,i])
         if st_type != StdType.NO_STD:
-            ret[:,i] = standardize(st_type)(x[:,i])
+            ret[:,i] = standardize_switch(st_type)(x[:,i])
         
     return ret

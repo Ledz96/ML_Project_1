@@ -17,7 +17,7 @@ def build_k_indices(y, k_fold, seed):
                  for k in range(k_fold)]
     return np.array(k_indices)
 
-def cross_validation(y, x, k_fold, function_name, lambda_=0, max_iters=0, gamma=0,threshold=0.5, seed=1):
+def cross_validation(y, x, k_fold, function_name, lambda_=0, max_iters=0, gamma=0,threshold=0.5, seed=1, print_=False):
     """return the loss of ridge regression."""
 
     #rmse_tr = []
@@ -60,7 +60,7 @@ def cross_validation(y, x, k_fold, function_name, lambda_=0, max_iters=0, gamma=
         elif function_name == 'ridge_regression':
             w,loss = f(y_tr, x_tr, lambda_)
         else:
-            w,loss = f(y_tr, x_tr, initial_w, max_iters, gamma)
+            w,loss = f(y_tr, x_tr, initial_w, max_iters, gamma, print_)
     
         # calculate the error for train and test data
         #rmse_tr.append(2*compute_mse(y_tr, x_tr, w))

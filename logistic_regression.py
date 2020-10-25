@@ -32,7 +32,7 @@ def learning_by_gradient_descent(y, tx, w, gamma):
 
     return loss, w
 
-def logistic_regression(y, tx, initial_w, max_iters, gamma):
+def logistic_regression(y, tx, initial_w, max_iters, gamma, print_ = False):
     # init parameters
     threshold = 1e-8
     losses = []
@@ -46,7 +46,8 @@ def logistic_regression(y, tx, initial_w, max_iters, gamma):
         
         # log info
         #if iter % 100 == 0:
-        print("Current iteration={i}, loss={l}".format(i=iter, l=loss))
+        if print_:
+            print("Current iteration={i}, loss={l}".format(i=iter, l=loss))
         
         # converge criterion
         losses.append(loss)

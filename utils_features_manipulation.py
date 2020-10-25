@@ -16,6 +16,15 @@ def standardize(x):
     xnew[:,1:]=subx
     return xnew, mean_x, substd_x
 
+def standardize_test(x, mean_x, substd_x ):
+    """Standardize the original data set ignoring column of 1."""
+    xnew=x
+    subx=x[:,1:]
+    subx = subx - mean_x
+    subx = subx / substd_x
+    xnew[:,1:]=subx
+    return xnew, mean_x, substd_x
+
 def build_poly_multi(tx, degree):
     """polynomial basis functions for input data tx, for all features expanded to d degree.Extended matrix is inputed np.array"""
     # ***************************************************
